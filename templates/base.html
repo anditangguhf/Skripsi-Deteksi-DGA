@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <title>DGA Traffic Analyzer: {{title}}</title>
+
+    <!-- jQuery -->
+    <script src="{{ url_for('static', filename = 'jquery/jquery.min.js') }}"></script>
+
+    <!-- Bootstrap -->
+    <script src="{{ url_for('static', filename = 'bootstrap/bootstrap.min.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename = 'bootstrap/bootstrap.min.css') }}">
+
+    <!-- Fontawesome -->
+    <link rel="stylesheet" href="{{ url_for('static', filename = 'fontawesome/css/font-awesome.min.css') }}">
+
+    <!-- Datatables -->
+    <script src="{{ url_for('static', filename = 'datatables/datatables.min.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename = 'datatables/datatables.min.css') }}">
+
+    <!-- SocketIO -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js" integrity="sha256-bQmrZe4yPnQrLTY+1gYylfNMBuGfnT/HKsCGX+9Xuqo=" crossorigin="anonymous"></script>
+
+    <!-- Custom scripts and css -->
+    <script src="{{ url_for('static', filename = 'script.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename = 'style.css') }}">
+</head>
+<body>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+        <div>
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Home</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/live">Live Capture</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/pcap">Analyze PCAP</span></a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div id="content">
+        {% block content %}{% endblock %}
+
+        <div class="spinner-border spinner-border-sm hidden dummy-spinner" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <!-- <footer class="footer bg-dark text-light text-center">&copy; Copyright 2020 Andi Tangguh Kippi Nusantara - 2015730017</footer> -->
+</body>
+</html>

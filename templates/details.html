@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container">
+        <table class="table table-borderless">
+            <tr>
+                <td class="detail-head">Domain ID</td>
+                <td class="table-colon">:</td>
+                <td class="detail-value">{{ summary['id'] }}</td>
+                <td class="detail-option"></td>
+            </tr>
+            <tr>
+                <td class="detail-head">Domain Name</td>
+                <td class="table-colon">:</td>
+                <td class="detail-value">{{ summary['name'] }}</td>
+            </tr>
+            <tr>
+                <td class="detail-head">Is DGA</td>
+                <td class="table-colon">:</td>
+                {% if summary['is_dga'] == 1 %}
+                    <td class="detail-value text-danger">Yes</td>
+                {% else %}
+                    <td class="detail-value text-success">No</td>
+                {% endif %}
+                <td class="detail-option"></td>
+            </tr>
+            <tr>
+                <td class="detail-head">NXDOMAIN Count</td>
+                <td class="table-colon">:</td>
+                <td class="detail-value">{{ summary['count_nxdomain'] }}</td>
+                <td class="detail-option"></td>
+            </tr>
+            <tr>
+                <td class="detail-head">Times Queried</td>
+                <td class="table-colon">:</td>
+                <td class="detail-value">{{ summary['times_queried'] }}</td>
+                <td class="detail-option"></td>
+            </tr>
+            <tr class="packet-details">
+                <td colspan="4">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <div class="row">
+                                <select class="select-packet-id form-control">
+                                    <option value="None" disabled selected>-- Select Packet ID --</option>
+                                    {% for id in summary['packet_ids'] %}
+                                        <option value="{{ id }}">{{ id }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="row packet-details-body">
+                                <table class="packet-details-table text-left">
+                                    <tr>
+                                        <td class="packet-detail-head">Arrival Time</td>
+                                        <td class="table-colon">:</td>
+                                        <td class="packet-detail-value" key="arrival_time"></td>
+                                        <td class="packet-detail-option"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="packet-detail-head">Source IP</td>
+                                        <td class="table-colon">:</td>
+                                        <td class="packet-detail-value" key="src_ip"></td>
+                                        <td class="packet-detail-option"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="packet-detail-head">Destination IP</td>
+                                        <td class="table-colon">:</td>
+                                        <td class="packet-detail-value" key="dst_ip"></td>
+                                        <td class="packet-detail-option"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="packet-detail-head">Query Type</td>
+                                        <td class="table-colon">:</td>
+                                        <td class="packet-detail-value" key="query_type"></td>
+                                        <td class="packet-detail-option"></td>
+                                    </tr><tr>
+                                        <td class="packet-detail-head">Query Class</td>
+                                        <td class="table-colon">:</td>
+                                        <td class="packet-detail-value" key="query_class"></td>
+                                        <td class="packet-detail-option"></td>
+                                    </tr><tr>
+                                        <td class="packet-detail-head">DNS Flag</td>
+                                        <td class="table-colon">:</td>
+                                        <td class="packet-detail-value" key="flags"></td>
+                                        <td class="packet-detail-option"></td>
+                                    </tr><tr>
+                                        <td class="packet-detail-head">RCODE</td>
+                                        <td class="table-colon">:</td>
+                                        <td class="packet-detail-value" key="rcode"></td>
+                                        <td class="packet-detail-option"></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <script>
+        jQuery(document).ready(function($) {
+            packets = {{ packets|tojson }};
+            dns_dict = {{ dns_dict|tojson }};
+            console.log(dns_dict);
+
+            $(".select-packet-id").change(function() {
+                let value = $(this).val();
+                let pkt = {};
+                let p_id = "";
+                let detail_val = "";
+                let dd_key = "";
+                let dd_idx = "";
+                for(const p in packets) {
+                    p_id = packets[p]['id'];
+                    if(String(p_id) === value) {
+                        for (const pk in packets[p]) {
+                            detail_val = packets[p][pk];
+                            console.log(pk);
+                            if(pk === "query_class" || pk === "query_type" || pk === "rcode") {
+                                dd_key = pk;
+                                dd_idx = parseInt(packets[p][pk]);
+                                detail_val = packets[p][pk] + " | " + dns_dict[dd_key][dd_idx];
+                            } else if(pk === "flags") {
+                                detail_val = "";
+                                /**
+                                 * 0 QR         "Response: Message is a Response/Query"
+                                 * 1-4 OPCODE   "Opcode: <OPCODE_DESC>"
+                                 * 5 AA         "Authoritative: <AA_DESC">
+                                 * 6 TC         "Truncated: <TC_DESC>"
+                                 * 7 RD         "Recursion desired: <RD_DESC>"
+                                 * 8 RA         "Recursion available: <RA_DESC>"
+                                 * 9 Z          "Z: <Z_DESC>"
+                                 * 10 AD        "Answer Authenticated: <AD_DESC>"
+                                 * 11 CD        "Non-authenticated data: <CD_DESC>"
+                                 * 12-15 RCODE  "Reply code: <RCODE_DESC>"
+                                 */
+                                dd_key = pk;
+                                bin = parseInt(packets[p][pk], 16).toString(2)
+                                flags_label = {
+                                    'QR': 'Response (QR): ',
+                                    'OPCODE': "Opcode (OPCODE): ",
+                                    'AA': "Authoritative (AA): ",
+                                    'TC': "Truncated (TC): ",
+                                    'RD': "Recursion desired (RD): ",
+                                    'RA': "Recursion available (RA): ",
+                                    'Z': "Z: ",
+                                    'AD': "Answer authenticated (AD): ",
+                                    'CD': "Non-authenticated data (CD): ",
+                                    'RCODE': "Reply code: "
+                                }
+                                flags = {
+                                    'QR': parseInt(bin[0], 2).toString(10),
+                                    'OPCODE': parseInt(bin.substr(1,4), 2).toString(10),
+                                    'AA': parseInt(bin[5], 2).toString(10),
+                                    'TC': parseInt(bin[6], 2).toString(10),
+                                    'RD': parseInt(bin[7], 2).toString(10),
+                                    'RA': parseInt(bin[8], 2).toString(10),
+                                    'Z': parseInt(bin[9], 2).toString(10),
+                                    'AD': parseInt(bin[10], 2).toString(10),
+                                    'CD': parseInt(bin[11], 2).toString(10),
+                                    'RCODE': parseInt(bin.substr(12,15), 2).toString(10)
+                                }
+
+                                for (const fk in flags) {
+                                    fv = dns_dict['flags'][fk][flags[fk]];
+                                    detail_val += "<div key='"+fk+"'>"+flags_label[fk] + fv+"</div>";
+                                }
+                            }
+                            $(".packet-detail-value[key="+pk+"]").html(detail_val);
+                        }
+                    }
+                }
+            });
+        })
+    </script>
+{% endblock %}
