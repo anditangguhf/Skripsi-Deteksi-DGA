@@ -5,6 +5,7 @@ Perangkat lunak dibangun sebagai implementasi pada skripsi berjudul *Deteksi Ser
 ## Development
 
 Perangkat lunak dibangun menggunakan komputer dengan spesifikasi sebagai berikut:
+
 1. Sistem operasi: Ubuntu (v20.04 LTS)
 2. Bahasa pemrograman: Python 2.7, HTML, JavaScript
 3. Basis Data: MySQL ver. 8.0.20-0ubuntu0.20.04.1 for Linux on x86_64
@@ -12,21 +13,22 @@ Perangkat lunak dibangun menggunakan komputer dengan spesifikasi sebagai berikut
 5. Library: Pyshark v0.3.8, Flask v1.1.2, Flask-SocketIO v4.2.1
 
 Untuk melakukan ubahan, menjalankan, dan membangun perangkat lunak ini dibutuhkan hal sebagai berikut:
+
 1. Perangkat lunak sebaiknya diubah, dijalankan, dan dibangun menggunakan OS Ubuntu (tested pada v19.10 dan v20.04 LTS)
 2. Pastikan anda telah menginstall dan melakukan set-up Apache, MySQL, dan Python (v2.7) pada Ubuntu anda
 3. Install [TShark](https://www.wireshark.org/docs/man-pages/tshark.html). Pastikan TShark memiliki permission agar bisa dijalankan tanpa menggunakan `sudo`.
 4. Install *library* yang dibutuhkan. Disarankan anda menggunakan Virtual Environment Python (venv).
    1. Pyshark v0.3.8
-   ```
-   $ pip install pyshark==0.3.8
+   ``` 
+   $ pip install pyshark==0.3.8 
    ```
    2. Flask
-   ```
-   $ pip install Flask
+   ``` 
+   $ pip install Flask 
    ```
    3. Flask-SocketIO
-   ```
-   $ pip install flask-socketio
+   ``` 
+   $ pip install flask-socketio 
    ```
 5. Ubah nilai `MAIN_INTERFACE` pada baris **15** dengan nama *Network Interface Card* (NIC) yang akan digunakan sebagai NIC untuk melakukan proses penangkapan *traffic* DNS. Anda dapat memeriksanya dengan menjalankan *command* `$ ifconfig` pada terminal untuk mengetahui nama NIC yang akan digunakan.
 6. Lakukan ubahan *credentials* basis data MySQL pada file `app.py` baris **188-190**. Ubah parameter `user`, `passwd`, dan `database` sesuai dengan *credentials* yang anda gunakan.
