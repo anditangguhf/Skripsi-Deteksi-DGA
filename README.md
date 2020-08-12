@@ -12,6 +12,8 @@ Perangkat lunak dibangun menggunakan komputer dengan spesifikasi sebagai berikut
 4. IDE: PyCharm 2020.1.1 Professional Edition
 5. Library: Pyshark v0.3.8, Flask v1.1.2, Flask-SocketIO v4.2.1
 
+## Instalasi
+
 Untuk melakukan ubahan, menjalankan, dan membangun perangkat lunak ini dibutuhkan hal sebagai berikut:
 
 1. Perangkat lunak sebaiknya diubah, dijalankan, dan dibangun menggunakan OS Ubuntu (tested pada v19.10 dan v20.04 LTS)
