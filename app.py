@@ -185,9 +185,9 @@ UPLOAD_PATH = os.getcwd() + '/static/uploads/'
 
 db = mc.connect(
     host='localhost',
-    user='root',
-    passwd='root',
-    database='skripsi2'
+    user='',
+    passwd='',
+    database=''
 )
 cursor = db.cursor()
 
